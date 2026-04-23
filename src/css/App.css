@@ -1,8 +1,9 @@
 .page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  padding: 40px clamp(24px, 4vw, 48px) 64px;
+  min-height: 100vh;
+  height: auto;
+  padding: 32px clamp(16px, 4vw, 48px) 40px;
   background: var(--bg);
   overflow-y: auto;
   scroll-snap-type: y mandatory;
@@ -197,7 +198,7 @@
   gap: 32px;
   padding: 40px 0 24px;
   align-items: center;
-  min-height: calc(100vh - 120px);
+  min-height: min(760px, calc(100vh - 120px));
   scroll-snap-align: start;
   scroll-snap-stop: always;
   scroll-margin-top: 80px;
@@ -218,7 +219,7 @@
 
 .intro h1 {
   margin: 4px 0 16px;
-  font-size: clamp(30px, 4vw, 40px);
+  font-size: clamp(24px, 4.5vw, 40px);
   line-height: 1.1;
 }
 
@@ -365,12 +366,12 @@
 }
 
 .showcases {
-  margin-top: 400px;
-  padding: 80px 50px;
+  margin-top: clamp(120px, 26vh, 320px);
+  padding: clamp(44px, 7vh, 80px) clamp(16px, 4vw, 50px);
   display: flex;
   flex-direction: column;
   gap: 28px;
-  min-height: calc(100vh - 120px);
+  min-height: min(760px, calc(100vh - 120px));
   scroll-snap-align: start;
   scroll-snap-stop: always;
   scroll-margin-top: 80px;
@@ -390,7 +391,7 @@
 }
 
 .section-title {
-  font-size: clamp(26px, 3vw, 30px);
+  font-size: clamp(24px, 4.5vw, 40px);
   font-weight: 700;
 }
 
@@ -404,7 +405,7 @@
 .showcase-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 25px;
+  gap: clamp(14px, 2.4vw, 25px);
   max-width: 1300px;
   margin: 0 auto;
   flex: 1;
@@ -526,6 +527,8 @@
 .pill-link::after {
   content: '→';
   font-size: 14px;
+  opacity: 0.8;
+}
 
 /* Mobile-first tweaks */
 @media (hover: none) {
@@ -542,31 +545,127 @@
 }
 
 @media (max-width: 720px) {
-  /* Reduce page padding on small screens */
   .page {
-    padding: 24px 16px 40px;
+    padding: 24px 16px 36px;
+    scroll-snap-type: none;
   }
 
-  /* Make portrait socials 2 columns for better tapping */
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 14px;
+  }
+
+  .hero,
+  .showcases,
+  .skills {
+    scroll-snap-stop: normal;
+    scroll-margin-top: 60px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+    gap: 20px;
+    padding: 24px 0 16px;
+  }
+
+  .portrait {
+    order: 1;
+    justify-self: stretch;
+  }
+
+  .intro {
+    order: 2;
+  }
+
   .portrait-socials {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
-  /* Increase tap targets slightly */
   .social-chip {
+    min-height: 44px;
     padding: 14px;
     border-radius: 16px;
   }
 
-  /* Relax scroll snapping for smaller screens if needed */
-  .hero,
-  .showcases {
-    scroll-snap-stop: always;
-    scroll-margin-top: 70px;
+  .showcases,
+  .skills {
+    margin-top: clamp(80px, 16vh, 140px);
+    padding: 40px 20px;
+    min-height: auto;
+  }
+
+  .showcase-grid,
+  .skills-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .showcase-card,
+  .skill-card {
+    min-height: 0;
+  }
+
+  .showcase-media {
+    aspect-ratio: 4 / 3;
   }
 }
-  opacity: 0.8;
+
+@media (max-width: 480px) {
+  .page {
+    padding: 20px 12px 32px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .intro h1 {
+    font-size: clamp(24px, 7vw, 30px);
+    line-height: 1.15;
+  }
+
+  .body-text,
+  .showcase-body p,
+  .skill-body p {
+    font-size: 14px;
+  }
+
+  .showcases,
+  .skills {
+    margin-top: clamp(64px, 12vh, 100px);
+    padding: 32px 16px;
+  }
+
+  .portrait-socials {
+    gap: 10px;
+  }
+
+  .social-chip svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .showcase-body h3,
+  .skill-body h3 {
+    font-size: clamp(17px, 5vw, 20px);
+  }
+
+  .tech-chips span,
+  .skill-chips span {
+    font-size: 11px;
+    padding: 5px 9px;
+  }
 }
 
 /* Showcase footer removed */
@@ -577,21 +676,23 @@
 
 @media (max-width: 1024px) {
   .hero {
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
+    gap: 20px;
+    padding: 32px 0 20px;
   }
 
   .left-rail {
-    grid-row: 1 / span 3;
+    display: none;
   }
 
   .portrait {
-    grid-column: 2;
+    grid-column: 1;
     order: 2;
   }
 
   .socials {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 3;
     flex-direction: row;
     display: flex;
@@ -608,52 +709,22 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 740px;
   }
-}
 
-@media (max-width: 720px) {
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .nav {
-    flex-wrap: wrap;
-  }
-
-  .hero {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-  }
-
-
-  .portrait {
-    order: 1;
-    justify-self: stretch;
-  }
-
-  .intro {
-    order: 2;
-  }
-
-  .showcase-grid {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-
-  .showcase-card {
-    min-height: 0;
+  .showcases,
+  .skills {
+    margin-top: clamp(96px, 20vh, 220px);
+    padding: 56px 32px;
   }
 }
 
 /* Skills section */
 .skills {
-  margin-top: 400px;
-  padding: 80px 50px;
+  margin-top: clamp(120px, 26vh, 320px);
+  padding: clamp(44px, 7vh, 80px) clamp(16px, 4vw, 50px);
   display: flex;
   flex-direction: column;
   gap: 28px;
-  min-height: calc(100vh - 120px);
+  min-height: min(760px, calc(100vh - 120px));
   scroll-snap-align: start;
   scroll-snap-stop: always;
   scroll-margin-top: 80px;
@@ -676,7 +747,7 @@
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 25px;
+  gap: clamp(14px, 2.4vw, 25px);
 }
 
 .skill-card {
@@ -742,8 +813,6 @@
 
 /* Section titles with gradient */
 .section-title {
-  font-size: 40px;
-  font-weight: 700;
   background: linear-gradient(135deg, #ffffff, #b0c4de);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -766,10 +835,6 @@
 }
 
 @media (max-width: 720px) {
-  .skills {
-    scroll-snap-stop: always;
-    scroll-margin-top: 70px;
-  }
   .skills-grid {
     grid-template-columns: 1fr;
     max-width: 520px;
