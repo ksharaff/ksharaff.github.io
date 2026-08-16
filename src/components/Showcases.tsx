@@ -1,35 +1,13 @@
-import chessImg from '../assets/chess.png'
-import sentimentImg from '../assets/sentiment.jpg'
-import automataImg from '../assets/automata.jpg'
-
-const showcases = [
-  {
-    title: 'C+- Custom Chess Game',
-    description:
-      'A fully functioning chess game with custom game logic.',
-    image: chessImg,
-    href: 'https://github.com/kxredo/custom-chess',
-    stack: ['Java, Java Swing'],
-  },
-  {
-    title: 'Sentiment Analysis',
-    description:
-      'Machine learning project using PyTorch to analyze Amazon products sentiment with NLP techniques',
-    image: sentimentImg,
-    href: 'https://github.com/ksharaff/sentiment-analysis',
-    stack: ['Python', 'PyTorch', 'ML', 'NLP'],
-  },
-  {
-    title: 'Automata Theory Program',
-    description:
-      'Contributed in enhancing the Automata Thoery program.',
-    image: automataImg,
-    href: 'https://github.com/ksharaff/Automata_Practice_and_Test',
-    stack: ['Java', 'Swing'],
-  }
-]
+import { useMemo, useState } from 'react'
+import showcases from '../data/showcases'
 
 export function ShowcasesSection() {
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const categories = useMemo(
+    () => ['All', ...Array.from(new Set(showcases.map((s) => s.category)))],
+    []
+  )
+
   return (
     <section className="snap-section showcases" id="showcases">
       <div className="showcase-container">
@@ -38,8 +16,25 @@ export function ShowcasesSection() {
         </div>
 
         <div className="showcase-carousel">
+          <div className="showcase-filters-wrap">
+            <div className="showcase-filters">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={selectedCategory === cat ? 'active' : ''}
+                  aria-pressed={selectedCategory === cat}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="showcase-grid">
-            {showcases.map((item, index) => (
+            {showcases
+              .filter((s) => selectedCategory === 'All' || s.category === selectedCategory)
+              .map((item, index) => (
               <article className="showcase-card" key={item.title}>
                 <div className="showcase-media">
                   <a
@@ -80,3 +75,5 @@ export function ShowcasesSection() {
     </section>
   )
 }
+
+

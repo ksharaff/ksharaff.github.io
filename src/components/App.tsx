@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import '../css/App.css'
 import SnowFall from 'react-snowfall'
 import profileImage from '../assets/profile.jpeg'
-import { SkillsSection } from './Skills'
 import { ShowcasesSection } from './Showcases'
 
 
@@ -52,7 +51,6 @@ function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
   const [snowCount, setSnowCount] = useState(200)
-  const containerRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -103,81 +101,6 @@ function App() {
     }
   }, [cursorPos])
 
-  // Consolidated scroll handler - parallax disabled, progress bar only
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    
-    let rafId: number | null = null
-
-    const handleScroll = () => {
-      if (rafId) return
-      
-      rafId = requestAnimationFrame(() => {
-        const scrollY = el.scrollTop
-        const scrollHeight = el.scrollHeight - el.clientHeight
-        
-        // Update progress bar only
-        const scrollPercent = (scrollY / scrollHeight) * 100
-        const progressBar = document.querySelector('.nav-progress')
-        if (progressBar) {
-          ;(progressBar as HTMLElement).style.width = `${scrollPercent}%`
-        }
-        
-        rafId = null
-      })
-    }
-
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      el.removeEventListener('scroll', handleScroll)
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [])
-
-  // Track active section on scroll
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-
-    let rafId: number | null = null
-
-    const handleScroll = () => {
-      if (rafId) return
-      
-      rafId = requestAnimationFrame(() => {
-        const sections = Array.from(
-          el.querySelectorAll<HTMLElement>('.snap-section[id]'),
-        )
-        
-        let current = 'profile'
-        sections.forEach((section) => {
-          const rect = section.getBoundingClientRect()
-          if (rect.top <= window.innerHeight / 2) {
-            current = section.id
-          }
-        })
-        
-        // Update active nav links
-        const navLinks = el.querySelectorAll('.nav a')
-        navLinks.forEach((link) => {
-          link.classList.remove('active')
-          if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active')
-          }
-        })
-        
-        rafId = null
-      })
-    }
-
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      el.removeEventListener('scroll', handleScroll)
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [])
-
   // Scroll-triggered animations for cards (via Intersection Observer - no scroll listener)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -191,7 +114,7 @@ function App() {
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     )
 
-    const cards = document.querySelectorAll('.showcase-card, .skill-card')
+    const cards = document.querySelectorAll('.showcase-card')
     cards.forEach((card) => observer.observe(card))
     return () => observer.disconnect()
   }, [])
@@ -213,7 +136,7 @@ function App() {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
   return (
-    <div className="page" ref={containerRef}>
+    <div className="page">
       <SnowFall color="white" snowflakeCount={snowCount} />
       <header className="top-bar">
         <div className="brand">
@@ -224,7 +147,6 @@ function App() {
           <a className="active" href="#profile">
             Profile
           </a>
-          <a href="#skills">Skills</a>
           <a href="#showcases">Projects</a>
         </nav>
         <button
@@ -235,7 +157,6 @@ function App() {
         >
           <span className="toggle-dot" />
         </button>
-        <div className="nav-progress" aria-hidden />
       </header>
       <main className="snap-section hero" id="profile">
         <div className="parallax-bg" aria-hidden />
@@ -252,17 +173,19 @@ function App() {
             My name is <span className="highlight">Khaled</span>
           </h1>
           <p className="body-text">
-            My areas of interest include problem-solving, cloud infrastructure,
-            machine learning, and IoT.
+            My interests include data analysis and engineering, cybersecurity, and building infrastructure and applications for fun and practical use.
           </p>
-          <p className="body-text">
-            With a detail oriented-focus, I enjoy creating simple but effective
-            solutions to improve application performance, ease of maintenance,
-            and user experience.
-          </p>
-          <a className="resume" href="#resume">
+      
+          <a
+            className="resume"
+            href={encodeURI('/SE Resume - Khaled Sharafeddin .pdf')}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             My resume
           </a>
+
+          
         </section>
 
         <section className="portrait" aria-label="Profile photo">
@@ -293,9 +216,6 @@ function App() {
           <div className="cue-line" />
         </div>
       </main>
-
-      {/* Skills section */}
-      <SkillsSection />
 
       <ShowcasesSection />
 
