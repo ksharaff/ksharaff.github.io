@@ -1,11 +1,22 @@
-import chessImg from '../assets/chess.png'
-import sentimentImg from '../assets/sentiment.jpg'
+import ecommerceImg from '../assets/ecom.webp'
+import chessImg from '../assets/chess.webp'
+import sentimentImg from '../assets/sentiment.webp'
 import automataImg from '../assets/automata.jpg'
 import bankSystemImg from '../assets/mtbank.jpg'
 import carRentalImg from '../assets/carRental.jpg'
 import takeoverImg from '../assets/takeover.avif'
+import phishingImg from '../assets/phishing.webp'
 
 export const showcases = [
+  {
+    title: 'E-Commerce Microservices Platform',
+    description:
+      'Four independently deployable Spring Boot services behind an API gateway, with an event-driven order, payment, and stock flow over Kafka.',
+    image: ecommerceImg,
+    href: 'https://github.com/ksharaff/ecommerce',
+    stack: ['Java', 'Spring Boot', 'Kafka', 'PostgreSQL', 'Docker', 'Kubernetes'],
+    category: 'Backend',
+  },
   {
     title: 'Car Rental System',
     description:
@@ -49,6 +60,15 @@ export const showcases = [
     image: takeoverImg,
     href: 'https://github.com/ksharaff/soc-projects/tree/main/account-takeover-kql',
     stack: ['KQL', 'Microsoft Sentinel', 'Security', 'Detection'],
+    category: 'Cybersecurity',
+  },
+  {
+    title: 'Phishing Email Investigation',
+    description:
+      'An investigation workflow for analyzing phishing indicators, triaging suspicious email activity, and documenting the attack path.',
+    image: phishingImg,
+    href: 'https://github.com/ksharaff/soc-projects/tree/main/Phishing-Email-Investigation',
+    stack: ['Email Security', 'Threat Hunting', 'KQL', 'SOC'],
     category: 'Cybersecurity',
   },
   {

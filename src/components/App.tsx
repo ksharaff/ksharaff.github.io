@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../css/App.css'
 import SnowFall from 'react-snowfall'
-import profileImage from '../assets/profile.jpeg'
+import profileImage from '../assets/profile.webp'
 import { ShowcasesSection } from './Showcases'
 
 
-type SocialName = 'linkedin' | 'github' | 'instagram' | 'mail'
+type SocialName = 'linkedin' | 'github' | 'mail'
 
 const socials: { label: string; href: string; icon: SocialName }[] = [
   { label: 'LinkedIn', href: 'https://linkedin.com/in/khaled-sharafeddin', icon: 'linkedin' },
   { label: 'GitHub', href: 'https://github.com/ksharaff', icon: 'github' },
-  { label: 'Instagram', href: 'https://www.instagram.com/khaledsharaff/', icon: 'instagram' },
   { label: 'Email', href: 'mailto:khaled.sharafeddin@outlook.com', icon: 'mail' },
 ]
 
@@ -28,12 +27,6 @@ const SocialIcon = ({ name }: { name: SocialName }) => {
           <path d="M12 2.4a9.6 9.6 0 0 0-3 18.7c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1-.9-1.3-.9-1.3-.8-.6 0-.6 0-.6.9.1 1.4 1 1.4 1 .8 1.4 2.2 1 2.8.8.1-.6.3-1 .6-1.3-2.2-.3-4.6-1.1-4.6-5a3.8 3.8 0 0 1 1-2.6 3.4 3.4 0 0 1 .1-2.6s.8-.3 2.7 1a9.2 9.2 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1a3.4 3.4 0 0 1 .1 2.6 3.8 3.8 0 0 1 1 2.6c0 3.9-2.4 4.7-4.6 5 .3.2.7.8.7 1.7v2.5c0 .3.2.6.7.5A9.6 9.6 0 0 0 12 2.4z" />
         </svg>
       )
-    case 'instagram':
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden focusable="false">
-          <path d="M7.8 3.6h8.4a3.8 3.8 0 0 1 3.8 3.8v8.4a3.8 3.8 0 0 1-3.8 3.8H7.8a3.8 3.8 0 0 1-3.8-3.8V7.4a3.8 3.8 0 0 1 3.8-3.8zm0 2.2A1.6 1.6 0 0 0 6.2 7.4v8.4c0 .9.7 1.6 1.6 1.6h8.4c.9 0 1.6-.7 1.6-1.6V7.4c0-.9-.7-1.6-1.6-1.6H7.8zm9.2-.2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-5 2a4.1 4.1 0 1 1 0 8.2 4.1 4.1 0 0 1 0-8.2zm0 2.2a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8z" />
-        </svg>
-      )
     case 'mail':
       return (
         <svg viewBox="0 0 24 24" aria-hidden focusable="false">
@@ -48,81 +41,46 @@ const SocialIcon = ({ name }: { name: SocialName }) => {
 // Data and components are now in separate files for code-splitting
 
 function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const [activeSection, setActiveSection] = useState<'profile' | 'showcases'>('profile')
   const [snowCount, setSnowCount] = useState(200)
-  const cursorRef = useRef<HTMLDivElement>(null)
 
+  // Update active nav link based on visible section
   useEffect(() => {
-    document.documentElement.dataset.theme = theme
-  }, [theme])
+    const profile = document.getElementById('profile')
+    const showcases = document.getElementById('showcases')
+    if (!profile || !showcases) return
 
-  // Cursor follower effect - only on desktop, disabled during scroll
-  useEffect(() => {
-    const isTouchDevice = () => window.matchMedia('(hover: none)').matches
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isTouchDevice() && cursorRef.current) {
-        setCursorPos({ x: e.clientX, y: e.clientY })
-      }
-    }
+    const visibility = new Map<string, number>([
+      ['profile', 0],
+      ['showcases', 0],
+    ])
 
-    if (!isTouchDevice()) {
-      window.addEventListener('mousemove', handleMouseMove, { passive: true })
-      return () => window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
-
-  // Smooth cursor animation but only on mouse move, not continuous
-  useEffect(() => {
-    if (!cursorRef.current) return
-    const cursor = cursorRef.current
-    let x = cursorPos.x
-    let y = cursorPos.y
-    let rafId: number | null = null
-
-    const animate = () => {
-      x += (cursorPos.x - x) * 0.2
-      y += (cursorPos.y - y) * 0.2
-      cursor.style.left = x - 12 + 'px'
-      cursor.style.top = y - 12 + 'px'
-      
-      // Stop animation when close enough to target
-      if (Math.abs(cursorPos.x - x) > 0.5 || Math.abs(cursorPos.y - y) > 0.5) {
-        rafId = requestAnimationFrame(animate)
-      } else {
-        rafId = null
-      }
-    }
-
-    animate()
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [cursorPos])
-
-  // Scroll-triggered animations for cards (via Intersection Observer - no scroll listener)
-  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in')
-          }
+          visibility.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0)
         })
+
+        const profileRatio = visibility.get('profile') ?? 0
+        const showcasesRatio = visibility.get('showcases') ?? 0
+        setActiveSection(showcasesRatio > profileRatio ? 'showcases' : 'profile')
       },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      {
+        threshold: [0, 0.1, 0.2, 0.35, 0.5, 0.7],
+        rootMargin: '-18% 0px -30% 0px',
+      }
     )
 
-    const cards = document.querySelectorAll('.showcase-card')
-    cards.forEach((card) => observer.observe(card))
+    observer.observe(profile)
+    observer.observe(showcases)
+
     return () => observer.disconnect()
   }, [])
 
   // Adaptive snowfall for mobile and reduced motion
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const updateSnow = () => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const w = window.innerWidth
       const isSmall = w < 768
       setSnowCount(prefersReducedMotion ? 0 : isSmall ? 50 : 100)
@@ -132,31 +90,29 @@ function App() {
     return () => window.removeEventListener('resize', updateSnow)
   }, [])
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
-  }
   return (
     <div className="page">
-      <SnowFall color="white" snowflakeCount={snowCount} />
+      {snowCount > 0 && (
+        <SnowFall
+          color="white"
+          snowflakeCount={snowCount}
+          style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 1 }}
+        />
+      )}
+      <div className="page-content">
       <header className="top-bar">
         <div className="brand">
           <div>Khaled</div>
           <div>Sharafeddin.</div>
         </div>
         <nav className="nav">
-          <a className="active" href="#profile">
+          <a className={activeSection === 'profile' ? 'active' : ''} href="#profile">
             Profile
           </a>
-          <a href="#showcases">Projects</a>
+          <a className={activeSection === 'showcases' ? 'active' : ''} href="#showcases">
+            Projects
+          </a>
         </nav>
-        <button
-          className="theme-toggle"
-          aria-label="Toggle theme"
-          data-theme={theme}
-          onClick={toggleTheme}
-        >
-          <span className="toggle-dot" />
-        </button>
       </header>
       <main className="snap-section hero" id="profile">
         <div className="parallax-bg" aria-hidden />
@@ -173,12 +129,12 @@ function App() {
             My name is <span className="highlight">Khaled</span>
           </h1>
           <p className="body-text">
-            My interests include data analysis and engineering, cybersecurity, and building infrastructure and applications for fun and practical use.
+            My interests include Data Analysis & Engineering, Cybersecurity, and creating digital infrastructure.
           </p>
       
           <a
             className="resume"
-            href={encodeURI('/SE Resume - Khaled Sharafeddin .pdf')}
+            href={encodeURI('/SE Resume- Khaled Sharafeddin.pdf')}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -192,11 +148,15 @@ function App() {
           <div className="photo-frame">
             <img
               src={profileImage}
-              alt="Portrait"
+              alt="Khaled Sharafeddin"
+              width={800}
+              height={1422}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
           <div className="photo-shadow" />
-          <div className="cursor-follower" ref={cursorRef} />
           <div className="portrait-socials" aria-label="Social links">
             {socials.map((item) => (
               <a
@@ -220,6 +180,7 @@ function App() {
       <ShowcasesSection />
 
       {/* Contact section removed as requested */}
+      </div>
     </div>
   )
 }

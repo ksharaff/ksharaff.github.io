@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import showcases from '../data/showcases'
 
 export function ShowcasesSection() {
@@ -7,6 +7,34 @@ export function ShowcasesSection() {
     () => ['All', ...Array.from(new Set(showcases.map((s) => s.category)))],
     []
   )
+
+  const visible = useMemo(
+    () => showcases.filter((s) => selectedCategory === 'All' || s.category === selectedCategory),
+    [selectedCategory]
+  )
+
+  // Reveal cards as they scroll into view. Keyed on the filter so cards rendered
+  // by a category change get observed too - the previous version only ran on
+  // mount, so filtered-in cards were never revealed.
+  useEffect(() => {
+    const cards = document.querySelectorAll('.showcase-card:not(.animate-in)')
+    if (cards.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in')
+            obs.unobserve(entry.target) // reveal once, then stop watching
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    )
+
+    cards.forEach((card) => observer.observe(card))
+    return () => observer.disconnect()
+  }, [visible])
 
   return (
     <section className="snap-section showcases" id="showcases">
@@ -32,9 +60,7 @@ export function ShowcasesSection() {
             </div>
           </div>
           <div className="showcase-grid">
-            {showcases
-              .filter((s) => selectedCategory === 'All' || s.category === selectedCategory)
-              .map((item, index) => (
+            {visible.map((item, index) => (
               <article className="showcase-card" key={item.title}>
                 <div className="showcase-media">
                   <a
@@ -44,8 +70,8 @@ export function ShowcasesSection() {
                     rel="noopener noreferrer"
                     aria-label={`Open ${item.title}`}
                   >
-                    <img src={item.image} alt={item.title} />
-                    {index === showcases.length - 1 && (
+                    <img src={item.image} alt={item.title} loading="lazy" decoding="async" />
+                    {index === visible.length - 1 && (
                       <div className="nav-arrow">›</div>
                     )}
                   </a>
