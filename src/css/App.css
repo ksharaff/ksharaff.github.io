@@ -68,12 +68,32 @@
   align-items: center;
   justify-content: flex-start;
   gap: 24px;
-  padding: 12px 0;
   position: sticky;
   top: 0;
   z-index: 20;
-  background: transparent;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* A sticky bar with a transparent background let the hero heading scroll
+     visibly through it. Bleed across the page gutters (.page uses the same
+     clamp for its side padding) and blur whatever passes underneath. */
+  margin: 0 calc(-1 * clamp(16px, 4vw, 48px));
+  padding: 12px clamp(16px, 4vw, 48px);
+  background: rgba(14, 17, 21, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Firefox with backdrop-filter disabled, and older Safari: fall back to opaque. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .top-bar {
+    background: var(--bg);
+  }
+}
+
+/* Anchor targets must clear the sticky bar. This previously existed only in the
+   <=720px and <=480px blocks, so on desktop each section landed underneath it. */
+#profile,
+#showcases {
+  scroll-margin-top: 88px;
 }
 
 .brand {
