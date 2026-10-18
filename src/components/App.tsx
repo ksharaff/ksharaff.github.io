@@ -129,7 +129,7 @@ function App() {
             My name is <span className="highlight">Khaled</span>
           </h1>
           <p className="body-text">
-            My interests include Data Analysis & Engineering, Cybersecurity, and creating digital infrastructure.
+            Interested in cybersecurity and creating secure digital infrastructure.
           </p>
       
           <a

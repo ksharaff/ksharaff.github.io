@@ -26,3 +26,21 @@ dist-ssr
 
 # Build analysis output
 stats.html
+
+# Environment / secrets
+# NOTE: *.local above already catches .env.local, but NOT plain .env or
+# .env.production. This repo is public, so a committed key is public forever.
+.env
+.env.*
+!.env.example
+
+# Windows shell cruft (the .DS_Store rule above is the macOS equivalent)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Lint cache (only written when eslint runs with --cache)
+.eslintcache
+
+# Claude Code: commit the shared settings, keep personal overrides local
+.claude/settings.local.json
