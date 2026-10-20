@@ -6,8 +6,9 @@ import bankSystemImg from '../assets/mtbank.jpg'
 import carRentalImg from '../assets/carRental.jpg'
 import takeoverImg from '../assets/takeover.avif'
 import phishingImg from '../assets/phishing.webp'
+import pod042Img from '../assets/pod042.webp'
 
-export const showcases = [
+const projects = [
   {
     title: 'E-Commerce Microservices Platform',
     description:
@@ -33,6 +34,15 @@ export const showcases = [
     image: bankSystemImg,
     href: 'https://github.com/ksharaff/Multi-Threaded-Bank-System',
     stack: ['C', 'POSIX Threads', 'epoll', 'Sockets'],
+    category: 'OS',
+  },
+  {
+    title: 'POD-042 System Diagnostics',
+    description:
+      'A NieR:Automata-inspired Linux terminal monitor that reads CPU, memory, disk, network, processes, and connections straight from /proc, with swappable feature "chips", an event log, and pod-to-pod TCP messaging.',
+    image: pod042Img,
+    href: 'https://github.com/ksharaff/pod042',
+    stack: ['C++20', 'Linux', 'FTXUI', 'CMake', 'TCP Sockets'],
     category: 'OS',
   },
   {
@@ -74,12 +84,15 @@ export const showcases = [
   {
     title: 'Automata Theory Program',
     description:
-      'Contributed in enhancing the Automata Thoery program.',
+      'Contributed in enhancing the Automata Theory program.',
     image: automataImg,
     href: 'https://github.com/ksharaff/Automata_Practice_and_Test',
     stack: ['Java', 'Swing'],
-    category: 'Theory',
+    category: 'Desktop',
   },
 ]
+
+// Always show projects A to Z by title, so new entries can be added anywhere above.
+export const showcases = [...projects].sort((a, b) => a.title.localeCompare(b.title))
 
 export default showcases
